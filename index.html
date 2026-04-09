@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>超級無敵大電視 - iPad 修正版</title>
+    <title>教學評估系統 - 縮放修復版</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,8 +12,8 @@
         <div class="sticky-controls">
             <div class="control-row">
                 <div class="group"><label>📂 分類：</label><select id="category-filter" onchange="renderBank()"><option value="all">顯示全部</option></select></div>
-                <div class="group"><label>🎮 等級：</label><select id="game-level"><option value="1">L1 學習模式</option><option value="2">L2 評估模式</option></select></div>
-                <div class="group"><label>🔀 順序：</label><select id="order-mode"><option value="sequence">依類別顯示</option><option value="random">隨機顯示</option></select></div>
+                <div class="group"><label>🎮 等級：</label><select id="game-level"><option value="1">L1 學習模式</option><option value="2">L2 挑戰模式</option></select></div>
+                <div class="group"><label>🔀 順序：</label><select id="order-mode"><option value="sequence">依序</option><option value="random">隨機</option></select></div>
             </div>
             <div class="action-row">
                 <div class="status">已選：<strong id="selected-count">0</strong></div>
@@ -37,7 +37,7 @@
             <div class="image-area">
                 <div class="img-frame"><img id="display-img" src=""></div>
                 <div id="label-box" class="name-label hide-text"></div>
-                <button class="btn btn-nav" style="width:100%" onclick="toggleName()"> 顯示項目名稱</button>
+                <button class="btn btn-nav" style="width:100%" onclick="toggleName()">👁️ 顯示項目名稱</button>
             </div>
             <div id="hints-area" class="hints-grid"></div>
         </div>
