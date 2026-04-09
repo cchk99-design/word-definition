@@ -3,24 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Big TV - 專業教學評估版</title>
+    <title>教學評估系統 - 超級無敵大電視</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="bank-screen">
-        <h1 class="main-title">📺 超級無敵大電視 <small>v3.0</small></h1>
-        
+        <h1 class="main-title">📺 超級無敵大電視 <small>Teacher Pro</small></h1>
         <div class="sticky-controls">
             <div class="control-row">
-                <div class="group"><label>📂 分類：</label><select id="category-filter" onchange="filterCategory()"><option value="all">顯示全部</option></select></div>
-                <div class="group"><label>🎮 等級：</label><select id="game-level"><option value="1">L1 學習模式</option><option value="2">L2 評估模式</option></select></div>
+                <div class="group"><label>📂 分類：</label><select id="category-filter" onchange="renderBank()"><option value="all">顯示全部</option></select></div>
+                <div class="group"><label>🎮 等級：</label><select id="game-level"><option value="1">L1 學習 (相關提示)</option><option value="2">L2 評估 (全選模式)</option></select></div>
                 <div class="group"><label>🔀 順序：</label><select id="order-mode"><option value="sequence">依類別顯示</option><option value="random">隨機顯示</option></select></div>
             </div>
             <div class="action-row">
-                <div class="status">已選項目：<strong id="selected-count">0</strong></div>
+                <div class="status">已選：<strong id="selected-count">0</strong></div>
                 <div class="zoom-box">🔍 <input type="range" id="zoom-slider" min="140" max="300" value="180" oninput="adjustZoom()"></div>
                 <div class="btns">
-                    <button class="btn btn-reset" onclick="resetSelection()">清空 🔄</button>
+                    <button class="btn btn-reset" onclick="resetSelection()">重設 🔄</button>
                     <button id="start-btn" class="btn btn-start disabled" onclick="startGame()" disabled>開始 ▶️</button>
                 </div>
             </div>
@@ -31,41 +30,31 @@
     <div id="game-screen" class="hidden">
         <div class="game-header">
             <button class="btn-back" onclick="exitGame()">⬅️ 返回</button>
-            <div id="level-tag" class="level-tag">Level 1</div>
+            <div id="level-tag" class="level-tag"></div>
             <div id="progress-tag">0 / 0</div>
         </div>
         <div class="game-layout">
             <div class="image-area">
                 <div class="img-frame"><img id="display-img" src=""></div>
                 <div id="label-box" class="name-label hide-text"></div>
-                <div class="toggle-container" onclick="toggleNameManual()">
-                    <span id="name-toggle-icon"></span> 顯示名稱
-                </div>
+                <button class="btn btn-toggle" onclick="toggleName()">顯示名稱 </button>
             </div>
             <div id="hints-area" class="hints-grid"></div>
         </div>
         <div class="game-footer">
-            <button id="prev-btn" class="btn btn-nav" onclick="changeStage(-1)">⬅️ 上一個</button>
-            <button id="next-btn" class="btn btn-nav" onclick="changeStage(1)">下一個 ➡️</button>
+            <button id="prev-btn" class="btn btn-nav" onclick="changeStage(-1)">上一個</button>
+            <button id="next-btn" class="btn btn-nav" onclick="changeStage(1)">下一個</button>
         </div>
     </div>
 
     <div id="report-overlay" class="hidden">
         <div class="report-box">
-            <h2>📊 教學進度紀錄表</h2>
-            <div class="report-meta"><label>學生姓名：</label><input type="text" id="student-name" placeholder="請輸入姓名"></div>
-            <div class="table-scroll">
-                <table id="report-table">
-                    <thead><tr id="table-head"></tr></thead>
-                    <tbody id="table-body"></tbody>
-                </table>
-            </div>
-            <div class="report-btns">
-                <button class="btn btn-start" onclick="closeReport()">返回首頁</button>
-            </div>
+            <h2>📊 教學分析紀錄表</h2>
+            <div class="report-meta"><label>學生姓名：</label><input type="text" id="student-name" placeholder="輸入姓名"></div>
+            <div class="table-scroll"><table id="report-table"><thead><tr id="table-head"></tr></thead><tbody id="report-body"></tbody></table></div>
+            <div class="report-btns"><button class="btn btn-start" onclick="closeReport()">返回首頁</button></div>
         </div>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>
