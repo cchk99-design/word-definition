@@ -1,0 +1,61 @@
+:root { --card-size: 180px; --accent: #2196F3; }
+body { font-family: "Microsoft JhengHei", sans-serif; background: #FFFDF0; margin: 0; padding: 15px; touch-action: manipulation; }
+.hidden { display: none !important; }
+
+/* 頂部固定欄 (iPad 優化) */
+.sticky-controls { 
+    position: sticky; top: 10px; background: white; padding: 20px; border-radius: 25px; 
+    border: 4px solid #FFCC00; z-index: 1000; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 30px;
+}
+.filter-zoom-bar { display: flex; justify-content: space-between; align-items: center; padding-bottom: 15px; border-bottom: 2px dashed #EEE; gap: 10px; }
+.horizontal-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; }
+
+/* 選取框視覺強化 */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--card-size), 1fr)); gap: 20px; padding: 20px; }
+.vocab-card { 
+    background: white; border: 4px solid #EEE; border-radius: 20px; padding: 15px; 
+    position: relative; transition: transform 0.2s; cursor: pointer;
+}
+.vocab-card.selected { border-color: var(--accent); background: #E3F2FD; transform: scale(1.05); }
+.vocab-card.selected::after {
+    content: "✔️"; position: absolute; top: -10px; right: -10px; background: var(--accent);
+    color: white; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 3px solid white;
+}
+.vocab-card img { width: 100%; aspect-ratio: 1/1; object-fit: contain; }
+
+/* 按鈕大型化 */
+.nav-btn { padding: 18px 35px; font-size: 1.4rem; border-radius: 50px; border: none; font-weight: bold; cursor: pointer; box-shadow: 0 6px 0 #999; }
+.start-btn { background: #4CAF50; color: white; box-shadow: 0 6px 0 #2E7D32; }
+.reset-btn { background: #FF5252; color: white; box-shadow: 0 6px 0 #D32F2F; }
+.nav-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #666; }
+.nav-btn.disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* 遊戲主畫面 */
+.game-container { display: flex; align-items: center; gap: 30px; padding: 20px; }
+.display-box { flex: 1.2; background: white; border-radius: 30px; padding: 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+.main-img-wrapper { width: 100%; height: 350px; display: flex; align-items: center; justify-content: center; }
+#current-img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+/* 文字顯示開關 */
+.object-name { font-size: 4rem; font-weight: 900; margin: 20px 0; transition: 0.3s; }
+.hide-text .object-name { opacity: 0; filter: blur(20px); }
+.toggle-wrapper { background: #E1F5FE; padding: 10px 30px; border-radius: 50px; display: inline-block; font-size: 1.4rem; font-weight: bold; color: #0288D1; }
+
+/* 動態提示卡排版 */
+.hints-grid { 
+    flex: 1; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); 
+    gap: 15px; width: 100%; align-content: center;
+}
+.flip-card { height: 180px; perspective: 1000px; cursor: pointer; }
+.flip-card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
+.flipped .flip-card-inner { transform: rotateY(180deg); }
+.card-front, .card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 20px; display: flex; align-items: center; justify-content: center; flex-direction: column; }
+.card-front { background: #F0F0F0; border: 2px dashed #CCC; font-size: 3rem; color: #BBB; }
+.card-back { transform: rotateY(180deg); font-weight: bold; font-size: 1.2rem; }
+.hint-icon-img { width: 60%; height: 60%; object-fit: contain; margin-bottom: 5px; }
+
+/* 分類背景色 */
+.cat-bg { background: #B3E5FC; } .feat-bg { background: #C8E6C9; } .loc-bg { background: #FFE082; } 
+.func-bg { background: #E1BEE7; } .inside-bg { background: #FFCCBC; }
+
+@media (max-width: 1024px) { .game-container { flex-direction: column; } .hints-grid { width: 100%; } }
