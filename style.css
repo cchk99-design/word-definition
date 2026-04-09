@@ -2,40 +2,33 @@
 body { font-family: -apple-system, sans-serif; background: #FFFDF0; margin: 0; padding: 15px; user-select: none; touch-action: manipulation; }
 .hidden { display: none !important; }
 
-/* 佈局 */
 .sticky-controls { position: sticky; top: 10px; background: white; padding: 15px; border-radius: 20px; border: 4px solid var(--primary); z-index: 1000; box-shadow: 0 8px 20px rgba(0,0,0,0.1); margin-bottom: 30px; }
 .control-row, .action-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px; }
 
-/* 選題卡 */
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--card-w), 1fr)); gap: 20px; }
 .v-card { background: white; border-radius: 20px; border: 4px solid #EEE; text-align: center; cursor: pointer; padding: 10px; position: relative; }
 .v-card.selected { border-color: var(--accent); background: #E3F2FD; }
-.v-card.selected::after { content: "✔"; position: absolute; top: -10px; right: -10px; background: var(--accent); color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid white; }
-.v-card img { width: 100%; aspect-ratio: 1/1; object-fit: contain; }
 
-/* iPad 提示卡 - 重要修正 */
 .hints-grid { flex: 1.5; display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-.h-card { height: 120px; perspective: 1000px; cursor: pointer; position: relative; }
+.h-card { height: 130px; perspective: 1000px; cursor: pointer; position: relative; }
 .h-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
 
-/* Level 1 翻轉效果 */
 .flipped .h-inner { transform: rotateY(180deg); }
 
-.h-front, .h-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 20px; display: flex; align-items: center; justify-content: center; padding: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); box-sizing: border-box; }
+.h-front, .h-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); box-sizing: border-box; }
 
-/* L1 的正面（問號） */
 .h-front { background: #F5F5F5; border: 2px dashed #CCC; font-size: 2.5rem; color: #BBB; }
-/* L1 的背面 & L2 的內容面 */
-.h-back { transform: rotateY(180deg); font-weight: bold; font-size: 1.2rem; }
+.h-back { transform: rotateY(180deg); font-weight: bold; font-size: 1.1rem; line-height: 1.2; text-align: center; }
 
-/* Level 2 專用狀態：不旋轉，直接顯示內容但加邊框 */
+/* Level 2 修正 */
 .lvl2-mode .h-inner { transform: none !important; }
-.lvl2-mode .h-front { display: none; } /* 隱藏問號面 */
+.lvl2-mode .h-front { display: none; }
 .lvl2-mode .h-back { transform: none; border: 3px solid #EEE; background: white; }
 .lvl2-mode .ticked .h-back { border: 5px solid var(--accent); background: #E3F2FD; }
 .lvl2-mode .ticked::after { content: "✅"; position: absolute; top: -10px; right: -10px; font-size: 2rem; z-index: 10; }
 
-/* 顏色 */
+.hint-img { width: 50px; height: 50px; object-fit: contain; margin-bottom: 8px; }
+
 .cat-bg { background: #B3E5FC; } .feat-bg { background: #C8E6C9; } .loc-bg { background: #FFE082; } 
 .func-bg { background: #E1BEE7; } .in-bg { background: #FFCCBC; } .do-bg { background: #D1C4E9; } .play-bg { background: #F8BBD0; }
 
