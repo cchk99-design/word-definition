@@ -1,59 +1,80 @@
-:root { --primary: #FFCC00; --accent: #2196F3; --success: #4CAF50; --card-w: 180px; }
-body { font-family: -apple-system, sans-serif; background: #FFFDF0; margin: 0; padding: 15px; user-select: none; }
+:root { 
+    --primary: #FFEBB7; 
+    --accent: #AEC6CF; 
+    --success: #B4E3B4; 
+    --card-w: 180px;
+    /* Pastel Colors */
+    --pastel-blue: #E1F5FE;
+    --pastel-green: #E8F5E9;
+    --pastel-yellow: #FFF9C4;
+    --pastel-purple: #F3E5F5;
+    --pastel-orange: #FFF3E0;
+    --pastel-pink: #FCE4EC;
+    --pastel-grey: #FAFAFA;
+}
+
+body { font-family: -apple-system, sans-serif; background: #FFFCF5; margin: 0; padding: 15px; user-select: none; color: #555; }
 .hidden { display: none !important; }
 
-/* 主介面控制項 */
-.sticky-controls { position: sticky; top: 10px; background: white; padding: 20px; border-radius: 20px; border: 4px solid var(--primary); z-index: 1000; box-shadow: 0 8px 20px rgba(0,0,0,0.1); margin-bottom: 30px; }
-.control-row, .action-row { display: flex; justify-content: space-between; align-items: center; gap: 15px; margin-bottom: 10px; }
+/* 主選單控制 */
+.sticky-controls { position: sticky; top: 10px; background: white; padding: 15px; border-radius: 20px; border: 3px solid #FFD54F; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 30px; }
+.control-row, .action-row { display: flex; justify-content: space-between; align-items: center; gap: 15px; margin-bottom: 8px; }
 
 /* 選題網格 */
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--card-w), 1fr)); gap: 20px; }
-.v-card { background: white; border-radius: 20px; border: 4px solid #EEE; text-align: center; cursor: pointer; padding: 15px; position: relative; }
-.v-card.selected { border-color: var(--accent); background: #E3F2FD; }
-.v-card img { width: 85%; aspect-ratio: 1/1; object-fit: contain; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--card-w), 1fr)); gap: 15px; }
+.v-card { background: white; border-radius: 15px; border: 2px solid #F0F0F0; text-align: center; cursor: pointer; padding: 12px; transition: transform 0.1s; }
+.v-card.selected { border-color: var(--accent); background: #F0F7F9; transform: scale(0.98); }
+.v-card img { width: 80%; aspect-ratio: 1/1; object-fit: contain; }
 
-/* 遊戲畫面佈局 (iPad Friendly) */
-.game-header { display: flex; justify-content: space-between; align-items: center; background: white; padding: 15px 30px; border-radius: 20px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-.game-layout { display: grid; grid-template-columns: 1fr 1.3fr; gap: 30px; padding: 10px 20px; height: calc(100vh - 220px); }
+/* 遊戲佈局 */
+.game-header { display: flex; justify-content: space-between; align-items: center; background: white; padding: 12px 25px; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
+.game-layout { display: grid; grid-template-columns: 1fr 1.1fr; gap: 20px; padding: 0 10px; height: calc(100vh - 190px); }
 
-/* 左側大圖區 */
-.image-area { background: white; border-radius: 30px; padding: 30px; display: flex; flex-direction: column; text-align: center; border: 2px solid #EEE; }
-.img-frame { flex: 1; display: flex; align-items: center; justify-content: center; }
-.img-frame img { max-width: 100%; max-height: 100%; object-fit: contain; }
-.name-label { font-size: 3.5rem; font-weight: 900; margin: 20px 0; min-height: 1.2em; }
-.hide-text { filter: blur(25px); opacity: 0; }
+/* 左側大圖 */
+.image-area { background: white; border-radius: 25px; padding: 20px; display: flex; flex-direction: column; text-align: center; border: 1px solid #EEE; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
+.img-frame { flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.img-frame img { max-width: 90%; max-height: 90%; object-fit: contain; }
+.name-label { font-size: 2.8rem; font-weight: 800; margin: 15px 0; min-height: 1.2em; color: #444; }
+.hide-text { filter: blur(20px); opacity: 0; }
 
-/* 右側提示卡：固定每行 2 個，加大尺寸 */
-.hints-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; overflow-y: auto; padding: 10px; }
-.h-card { height: 180px; perspective: 1000px; cursor: pointer; position: relative; }
-.h-inner { width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
+/* 右側提示卡 - 優化間距與大小 */
+.hints-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; overflow-y: auto; padding: 5px; align-content: start; }
+.h-card { height: 140px; perspective: 1000px; cursor: pointer; }
+.h-inner { width: 100%; height: 100%; transition: transform 0.5s; transform-style: preserve-3d; }
 .flipped .h-inner { transform: rotateY(180deg); }
-.h-front, .h-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 25px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-.h-front { background: #F5F5F5; border: 4px dashed #DDD; font-size: 4.5rem; color: #CCC; }
-.h-back { transform: rotateY(180deg); font-weight: 800; font-size: 1.8rem; text-align: center; }
-.hint-img { width: 75px; height: 75px; margin-bottom: 12px; }
+
+.h-front, .h-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px; box-shadow: 0 3px 10px rgba(0,0,0,0.05); box-sizing: border-box; }
+
+.h-front { background: var(--pastel-grey); border: 2px dashed #DDD; font-size: 3rem; color: #CCC; }
+.h-back { transform: rotateY(180deg); font-weight: 700; font-size: 1.4rem; color: #555; border: 1px solid rgba(0,0,0,0.05); }
+.hint-img { width: 55px; height: 55px; margin-bottom: 8px; }
 
 /* L2 評估模式樣式 */
 .lvl2-mode .h-front { display: none; }
-.lvl2-mode .h-back { transform: none; background: white; border: 4px solid #F0F0F0; }
-.lvl2-mode .ticked .h-back { border-color: var(--accent); background: #E3F2FD; }
-.lvl2-mode .ticked::after { content: "✅"; position: absolute; top: -10px; right: -10px; font-size: 3.5rem; z-index: 10; }
+.lvl2-mode .h-back { transform: none; background: white; border: 3px solid #F5F5F5; }
+.lvl2-mode .ticked .h-back { border-color: var(--accent); background: #F0F7F9; }
+.lvl2-mode .ticked::after { content: "✅"; position: absolute; top: -5px; right: -5px; font-size: 2.2rem; z-index: 10; }
 
 /* 按鈕樣式 */
-.btn { padding: 15px 30px; border-radius: 50px; border: none; font-weight: bold; cursor: pointer; font-size: 1.2rem; box-shadow: 0 4px 0 #999; }
-.btn-back { background: #666; color: white; box-shadow: 0 4px 0 #333; }
-.btn-reset { background: #f44336; color: white; box-shadow: 0 4px 0 #b71c1c; }
-.btn-start { background: var(--success); color: white; box-shadow: 0 4px 0 #2E7D32; }
-.btn-download { background: #673AB7; color: white; box-shadow: 0 4px 0 #4527A0; margin-right: 15px; }
+.btn { padding: 12px 25px; border-radius: 50px; border: none; font-weight: bold; cursor: pointer; font-size: 1.1rem; box-shadow: 0 3px 0 #AAA; transition: all 0.1s; }
+.btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #AAA; }
+.btn-back { background: #E0E0E0; color: #666; box-shadow: 0 3px 0 #BBB; }
+.btn-reset { background: #FFCDD2; color: #C62828; box-shadow: 0 3px 0 #EF9A9A; }
+.btn-start { background: #C8E6C9; color: #2E7D32; box-shadow: 0 3px 0 #A5D6A7; }
+.btn-download { background: #D1C4E9; color: #4527A0; box-shadow: 0 3px 0 #B39DDB; margin-right: 15px; }
 
-/* 報表彈窗 */
-#report-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; }
-.report-box { background: white; padding: 40px; border-radius: 25px; width: 100%; max-width: 1000px; max-height: 90vh; overflow-y: auto; }
-.name-input { font-size: 1.3rem; padding: 10px; border: 2px solid #DDD; border-radius: 10px; }
-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-th, td { border: 1px solid #EEE; padding: 15px; text-align: center; font-size: 1.2rem; }
-th { background: #F8F8F8; }
+/* 報表 */
+#report-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.report-box { background: white; padding: 30px; border-radius: 20px; width: 95%; max-width: 900px; max-height: 85vh; overflow-y: auto; }
+table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; }
+th, td { border: 1px solid #EEE; padding: 12px; text-align: center; font-size: 1.1rem; }
+th { background: #F9F9F9; color: #888; }
 
-/* 類別顏色 */
-.cat-bg { background: #B3E5FC; } .feat-bg { background: #C8E6C9; } .loc-bg { background: #FFE082; } 
-.func-bg { background: #E1BEE7; } .in-bg { background: #FFCCBC; } .do-bg { background: #D1C4E9; } .play-bg { background: #F8BBD0; }
+/* Pastel Card Categories */
+.cat-bg { background: var(--pastel-blue); } 
+.feat-bg { background: var(--pastel-green); } 
+.loc-bg { background: var(--pastel-yellow); } 
+.func-bg { background: var(--pastel-purple); } 
+.in-bg { background: var(--pastel-orange); } 
+.do-bg { background: var(--pastel-pink); } 
+.play-bg { background: #E0F2F1; }
