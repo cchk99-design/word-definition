@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>超級無敵大電視 - iPad 專業動態版</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="bank-screen">
+        <h1 style="color: #5D4037; margin: 20px 0;">📺 超級無敵大電視</h1>
+        <div class="sticky-controls">
+            <div class="filter-zoom-bar">
+                <div class="control-group">
+                    <label>📂 分類：</label>
+                    <select id="category-filter" onchange="filterCategory()"><option value="all">顯示全部</option></select>
+                </div>
+                <div class="control-group">
+                    <label>🔀 排序：</label>
+                    <select id="order-mode">
+                        <option value="sequence">依類別顯示</option>
+                        <option value="random">隨機顯示</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>🔍 縮放：</label>
+                    <input type="range" id="zoom-slider" min="140" max="300" value="180" oninput="adjustZoom()">
+                </div>
+            </div>
+            <div class="horizontal-actions">
+                <div class="status-info">已選：<strong id="selected-count">0</strong></div>
+                <div class="button-group">
+                    <button class="nav-btn reset-btn" onclick="resetSelection()">重設 🔄</button>
+                    <button id="start-btn" class="nav-btn start-btn disabled" onclick="startSelectedGame()" disabled>開始練習 ▶️</button>
+                </div>
+            </div>
+        </div>
+        <div id="bank-content"></div>
+    </div>
+
+    <div id="game-screen" class="hidden">
+        <div class="header-nav">
+            <button class="back-btn" onclick="exitGame()">⬅️ 返回</button>
+            <div id="game-progress">1 / 1</div>
+        </div>
+        <div class="game-container">
+            <div class="display-box">
+                <div class="main-img-wrapper">
+                    <img id="current-img" src="" alt="">
+                </div>
+                <div id="label-container" class="hide-text">
+                    <div id="current-label" class="object-name">名稱</div>
+                </div>
+                <div class="toggle-wrapper">
+                    <label class="switch-label">
+                        <input type="checkbox" id="always-show-check" onchange="syncLabelWithCheck()">
+                        <span>顯示名稱 </span>
+                    </label>
+                </div>
+            </div>
+            <div id="dynamic-hints-grid" class="hints-grid"></div>
+        </div>
+        <div class="footer-nav">
+            <button id="prev-btn" class="nav-btn secondary-btn" onclick="prevPhoto()">⬅️ 上一個</button>
+            <button id="next-btn" class="nav-btn" onclick="nextPhoto()">下一個 ➡️</button>
+        </div>
+    </div>
+
+    <div id="report-overlay" class="hidden">
+        <div class="report-card">
+            <h2>📊 練習紀錄表</h2>
+            <div class="report-header-input"><label>學生姓名：</label><input type="text" id="student-name" placeholder="輸入姓名"></div>
+            <div class="report-scroll">
+                <table id="report-table">
+                    <thead><tr id="report-thead-row"></tr></thead>
+                    <tbody id="report-body"></tbody>
+                </table>
+            </div>
+            <div class="report-footer">
+                <button class="nav-btn save-img-btn" onclick="exportReportAsImage()">儲存圖片 📸</button>
+                <button class="nav-btn" onclick="closeReport()">關閉</button>
+            </div>
+        </div>
+    </div>
+    <canvas id="export-canvas" style="display:none;"></canvas>
+    <script src="script.js"></script>
+</body>
+</html>
