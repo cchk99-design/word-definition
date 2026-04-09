@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>教學評估系統 - 縮放修復版</title>
+    <title>超級無敵大電視 - 專業教學版</title>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,14 +13,14 @@
         <div class="sticky-controls">
             <div class="control-row">
                 <div class="group"><label>📂 分類：</label><select id="category-filter" onchange="renderBank()"><option value="all">顯示全部</option></select></div>
-                <div class="group"><label>🎮 等級：</label><select id="game-level"><option value="1">L1 學習模式</option><option value="2">L2 挑戰模式</option></select></div>
-                <div class="group"><label>🔀 順序：</label><select id="order-mode"><option value="sequence">依序</option><option value="random">隨機</option></select></div>
+                <div class="group"><label>🎮 等級：</label><select id="game-level"><option value="1">L1 學習模式</option><option value="2">L2 評估模式</option></select></div>
+                <div class="group"><label>🔀 順序：</label><select id="order-mode"><option value="sequence">依類別顯示</option><option value="random">隨機顯示</option></select></div>
             </div>
             <div class="action-row">
                 <div class="status">已選：<strong id="selected-count">0</strong></div>
-                <div class="zoom-box">🔍 <input type="range" id="zoom-slider" min="140" max="300" value="180" oninput="adjustZoom()"></div>
+                <div class="zoom-box">🔍 縮放：<input type="range" id="zoom-slider" min="140" max="300" value="180" oninput="adjustZoom()"></div>
                 <div class="btns">
-                    <button class="btn btn-reset" onclick="resetSelection()">重設 🔄</button>
+                    <button class="btn btn-reset" onclick="resetSelection()">重設</button>
                     <button id="start-btn" class="btn btn-start disabled" onclick="startGame()" disabled>開始 ▶️</button>
                 </div>
             </div>
@@ -37,7 +38,7 @@
             <div class="image-area">
                 <div class="img-frame"><img id="display-img" src=""></div>
                 <div id="label-box" class="name-label hide-text"></div>
-                <button class="btn btn-nav" style="width:100%" onclick="toggleName()">👁️ 顯示項目名稱</button>
+                <button class="btn btn-toggle" onclick="toggleName()">👁️ 顯示項目名稱</button>
             </div>
             <div id="hints-area" class="hints-grid"></div>
         </div>
@@ -48,10 +49,24 @@
     </div>
 
     <div id="report-overlay" class="hidden">
-        <div class="report-box">
-            <h2>📊 教學分析紀錄</h2>
-            <div class="table-scroll"><table id="report-table"><thead><tr id="table-head"></tr></thead><tbody id="report-body"></tbody></table></div>
-            <div class="report-btns"><button class="btn btn-start" onclick="closeReport()">返回主頁</button></div>
+        <div class="report-box" id="capture-area">
+            <div class="report-header">
+                <h2>📊 教學紀錄分析表</h2>
+                <div class="meta-info">
+                    <label>學生姓名：</label>
+                    <input type="text" id="student-name" placeholder="輸入姓名..." class="name-input">
+                </div>
+            </div>
+            <div class="table-scroll">
+                <table id="report-table">
+                    <thead><tr id="table-head"></tr></thead>
+                    <tbody id="report-body"></tbody>
+                </table>
+            </div>
+            <div class="report-btns">
+                <button class="btn btn-download" onclick="exportToImage()">💾 下載 PNG 紀錄</button>
+                <button class="btn btn-reset" onclick="closeReport()">返回首頁</button>
+            </div>
         </div>
     </div>
     <script src="script.js"></script>
