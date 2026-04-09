@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>iPad 專業教學系統 - 最終修復版</title>
+    <title>iPad 專業教學系統</title>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -13,7 +13,7 @@
         <div class="sticky-controls">
             <div class="control-row">
                 <div class="group"><label>📂 分類：</label><select id="category-filter" onchange="renderBank()"><option value="all">顯示全部</option></select></div>
-                <div class="group"><label>🎮 等級：</label><select id="game-level"><option value="1">L1 學習模式</option><option value="2">L2 評估模式</option></select></div>
+                <div class="group"><label>🎮 等級：</label><select id="game-level"><option value="1">L1 學習模式</option><option value="2">L2 挑戰模式</option></select></div>
                 <div class="group"><label>🔀 順序：</label><select id="order-mode"><option value="sequence">依類別顯示</option><option value="random">隨機顯示</option></select></div>
             </div>
             <div class="action-row">
@@ -54,7 +54,7 @@
                 <h2>📊 教學紀錄分析表</h2>
                 <div class="meta-info">
                     <label>學生姓名：</label>
-                    <input type="text" id="student-name" placeholder="請輸入學生姓名" class="name-input">
+                    <input type="text" id="student-name" placeholder="請輸入姓名" class="name-input">
                 </div>
             </div>
             <div class="table-scroll">
