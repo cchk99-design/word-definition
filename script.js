@@ -42,7 +42,7 @@ const UI_MAP = {
     "特徵": { class: "feat-bg", icon: "hint-feat.png" },
     "地點": { class: "loc-bg", icon: "hint-loc.png" },
     "用途": { class: "func-bg", icon: "hint-func.png" },
-    "裡面有什麼": { class: "in-bg", icon: "hint-in.png" },
+    "裡面有什麼": { class: "in-bg", icon: "hint-in.png" }, 
     "他會做什麼": { class: "do-bg", icon: "hint-do.png" },
     "怎麼玩": { class: "play-bg", icon: "hint-play.png" }
 };
@@ -72,7 +72,7 @@ function renderBank() {
             <div class="cat-sec">
                 <div style="display:flex; justify-content:space-between; align-items:center; background:#FFD54F; padding:10px 20px; border-radius:15px; margin:20px 0 10px">
                     <h3 style="margin:0">${c.name}</h3>
-                    <button class="btn" style="padding:5px 15px; font-size:0.8rem; box-shadow:none" onclick="toggleCatGroup('${c.id}')">全選 / 取消</button>
+                    <button class="btn" style="padding:5px 15px; font-size:0.9rem; box-shadow:none" onclick="toggleCatGroup('${c.id}')">全選 / 取消</button>
                 </div>
                 <div class="grid">${list.map(i => `
                     <div id="v-${i.id}" class="v-card ${selectedIds.has(i.id)?'selected':''}" onclick="toggleItem(${i.id})">
@@ -113,7 +113,6 @@ function startGame() {
     document.getElementById('bank-screen').classList.add('hidden');
     document.getElementById('game-screen').classList.remove('hidden');
     
-    // 修正點：如果是 Level 2，給容器加上專屬 Class 以便 CSS 控制
     const hintArea = document.getElementById('hints-area');
     if (level === 2) hintArea.classList.add('lvl2-mode');
     else hintArea.classList.remove('lvl2-mode');
@@ -131,7 +130,6 @@ function loadStage() {
     const grid = document.getElementById('hints-area');
     grid.innerHTML = '';
 
-    // Level 1 只顯規則內提示，Level 2 顯全部 7 個
     let activeHints = (level === 1) ? getValidHints(item.cat) : HINT_TYPES;
 
     activeHints.forEach(type => {
@@ -143,10 +141,8 @@ function loadStage() {
                 <div class="h-inner">
                     <div class="h-front">？</div>
                     <div class="h-back ${ui.class}">
-                        <div style="text-align:center">
-                            <img src="images/hints/${ui.icon}" style="width:40px;height:40px;display:block;margin:0 auto 5px" onerror="this.style.display='none'">
-                            <span>${type}</span>
-                        </div>
+                        <img src="images/hints/${ui.icon}" class="hint-img" onerror="this.style.visibility='hidden'">
+                        <span>${type}</span>
                     </div>
                 </div>
             </div>`);
