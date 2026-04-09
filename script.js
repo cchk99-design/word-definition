@@ -140,7 +140,7 @@ function loadStage() {
     });
     document.getElementById('label-box').className = 'name-label hide-text';
     document.getElementById('prev-btn').disabled = (currentIdx === 0);
-    document.getElementById('next-btn').innerText = (currentIdx === gameQueue.length - 1) ? "完成 🏁" : "下一個 ➡️";
+    document.getElementById('next-btn').innerText = (currentIdx === gameQueue.length - 1) ? "查看分析 🏁" : "下一個 ➡️";
 }
 
 function handleHintClick(el, type) {
@@ -155,16 +155,6 @@ function handleHintClick(el, type) {
     }
 }
 
-function getValidHints(cat) {
-    let list = ["類別", "特徵"];
-    if (RULES.location.includes(cat)) list.push("地點");
-    if (RULES.function.includes(cat)) list.push("用途");
-    if (RULES.inside.includes(cat)) list.push("裡面有什麼");
-    if (RULES.will_do.includes(cat)) list.push("他會做什麼");
-    if (RULES.how_play.includes(cat)) list.push("怎麼玩");
-    return list;
-}
-
 function showReport() {
     const head = document.getElementById('table-head');
     const body = document.getElementById('report-body');
@@ -177,10 +167,24 @@ function showReport() {
     document.getElementById('report-overlay').classList.remove('hidden');
 }
 
+// 返回首頁邏輯
+function exitGame() {
+    if(!confirm("確定要返回主頁嗎？目前的進度將不會儲存。")) return;
+    document.getElementById('game-screen').classList.add('hidden');
+    document.getElementById('bank-screen').classList.remove('hidden');
+}
+
+function closeReport() {
+    document.getElementById('report-overlay').classList.add('hidden');
+    document.getElementById('game-screen').classList.add('hidden');
+    document.getElementById('bank-screen').classList.remove('hidden');
+    resetSelection();
+}
+
 async function exportToImage() {
     const btn = document.querySelector('.btn-download');
     const ctrl = document.querySelector('.report-btns');
-    btn.innerText = "正在匯圖...";
+    btn.innerText = "正在儲存...";
     ctrl.style.display = 'none';
     try {
         const canvas = await html2canvas(document.getElementById('capture-area'), { scale: 2 });
@@ -194,11 +198,19 @@ async function exportToImage() {
     btn.innerText = "💾 下載 PNG 紀錄";
 }
 
+function getValidHints(cat) {
+    let list = ["類別", "特徵"];
+    if (RULES.location.includes(cat)) list.push("地點");
+    if (RULES.function.includes(cat)) list.push("用途");
+    if (RULES.inside.includes(cat)) list.push("裡面有什麼");
+    if (RULES.will_do.includes(cat)) list.push("他會做什麼");
+    if (RULES.how_play.includes(cat)) list.push("怎麼玩");
+    return list;
+}
+
 function toggleName() { document.getElementById('label-box').classList.toggle('hide-text'); }
 function changeStage(dir) { if (dir === 1 && currentIdx === gameQueue.length - 1) return showReport(); currentIdx += dir; loadStage(); }
 function adjustZoom() { document.documentElement.style.setProperty('--card-w', document.getElementById('zoom-slider').value + 'px'); }
 function resetSelection() { selectedIds.clear(); renderBank(); updateUI(); }
-function exitGame() { document.getElementById('game-screen').classList.add('hidden'); document.getElementById('bank-screen').classList.remove('hidden'); }
-function closeReport() { document.getElementById('report-overlay').classList.add('hidden'); exitGame(); }
 
 init();
