@@ -1,12 +1,11 @@
 const categories = [
-    { id: "fruits", name: "🍎 水果" }, { id: "veggies", name: "🥦 蔬菜" },
-    { id: "animals", name: "🐶 動物" }, { id: "colors", name: "🎨 顏色" },
-    { id: "occupation", name: "👨‍⚕️ 職業" }, { id: "toilet", name: "🚽 浴室用品" },
-    { id: "tableware", name: "🍽️ 餐具" }, { id: "drinks", name: "🍹 飲品" },
-    { id: "toys", name: "🧸 玩具" }, { id: "electronic", name: "💻 電器" },
-    { id: "furniture", name: "🛋️ 傢俬" }, { id: "stationery", name: "✏️ 文具" },
-    { id: "clothing", name: "👕 衣物" }, { id: "transport", name: "🚗 交通工具" },
-    { id: "places", name: "🏢 地點" }, { id: "accessories", name: "🕶️ 配飾" }
+    { id: "animals", name: "🐶 動物" }, { id: "transport", name: "🚗 交通工具" },
+    { id: "colors", name: "🎨 顏色" }, { id: "occupation", name: "👨‍⚕️ 職業" },
+    { id: "electronic", name: "💻 電器" }, { id: "furniture", name: "🛋️ 傢俬" },
+    { id: "toilet", name: "🚽 浴室" }, { id: "tableware", name: "🍽️ 餐具" },
+    { id: "stationery", name: "✏️ 文具" }, { id: "clothing", name: "👕 衣物" },
+    { id: "places", name: "🏢 地點" }, { id: "accessories", name: "🕶️ 配飾" },
+    { id: "toys", name: "🧸 玩具" }, { id: "fruits", name: "🍎 水果" }
 ];
 
 const vocabData = {
@@ -28,171 +27,175 @@ const vocabData = {
     accessories: ["眼鏡", "頸鍊","手鍊","耳環","戒指","手錶","髮夾","銀包","書包","手袋","遮"]
 };
 
-// 💡 更新後的提示卡規則：地點現在包含 animals 和 transport
-const HINT_RULES = {
-    location: ["colors", "occupation", "electronic", "furniture", "animals", "transport"],
-    function: ["occupation", "toilet", "tableware", "electronic", "furniture", "stationery", "clothing", "transport", "places", "accessories"],
-    inside: ["toys", "places"]
+const HINT_TYPES = ["類別", "特徵", "地點", "用途", "裡面有什麼", "他會做什麼", "怎麼玩"];
+
+// 💡 提示顯示邏輯規則
+const RULES = {
+    location: ["animals", "transport", "colors", "occupation", "electronic", "furniture"],
+    function: ["toilet", "tableware", "electronic", "furniture", "stationery", "clothing", "transport", "places", "accessories"],
+    inside: ["places"],
+    will_do: ["occupation"],
+    how_play: ["toys"]
 };
 
-const HINT_UI = {
-    "類別": { class: "cat-bg", img: "images/hints/hint-cat.png" },
-    "特徵": { class: "feat-bg", img: "images/hints/hint-feat.png" },
-    "地點": { class: "loc-bg", img: "images/hints/hint-loc.png" },
-    "用途": { class: "func-bg", img: "images/hints/hint-func.png" },
-    "裡面有什麼": { class: "inside-bg", img: "images/hints/hint-inside.png" }
+const UI_MAP = {
+    "類別": { class: "cat-bg", icon: "hint-cat.png" },
+    "特徵": { class: "feat-bg", icon: "hint-feat.png" },
+    "地點": { class: "loc-bg", icon: "hint-loc.png" },
+    "用途": { class: "func-bg", icon: "hint-func.png" },
+    "裡面有什麼": { class: "in-bg", icon: "hint-in.png" },
+    "他會做什麼": { class: "do-bg", icon: "hint-do.png" },
+    "怎麼玩": { class: "play-bg", icon: "hint-play.png" }
 };
 
-let vocabItems = [];
-let selectedIds = new Set();
-let gameQueue = [];
-let gameRecords = {};
-let currentIdx = 0;
-let currentFilter = "all";
+let allItems = [], selectedIds = new Set(), gameQueue = [], records = {}, currentIdx = 0, level = 1;
 
 function init() {
-    let gid = 1;
-    Object.keys(vocabData).forEach(catId => {
-        vocabData[catId].forEach((name, i) => {
-            const path = `images/vocab/${catId} (${i + 1}).png`;
-            vocabItems.push({ id: gid++, cat: catId, name: name, img: encodeURI(path) });
+    let idCounter = 1;
+    Object.keys(vocabData).forEach(cat => {
+        vocabData[cat].forEach((name, i) => {
+            allItems.push({ id: idCounter++, cat: cat, name: name, img: `images/vocab/${cat} (${i+1}).png` });
         });
     });
-    const sel = document.getElementById('category-filter');
-    categories.forEach(c => {
-        const opt = document.createElement('option');
-        opt.value = c.id; opt.textContent = c.name;
-        sel.appendChild(opt);
-    });
+    const filterSelect = document.getElementById('category-filter');
+    categories.forEach(c => filterSelect.add(new Option(c.name, c.id)));
     renderBank();
 }
 
 function renderBank() {
+    const filter = document.getElementById('category-filter').value;
     const cont = document.getElementById('bank-content');
     cont.innerHTML = '';
-    categories.forEach(cat => {
-        if (currentFilter !== "all" && currentFilter !== cat.id) return;
-        const items = vocabItems.filter(i => i.cat === cat.id);
-        if (!items.length) return;
-
-        const html = `
-            <div class="category-section">
-                <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 25px; background:#FFF9C4; margin-top:20px; border-radius:15px">
-                    <h3 style="margin:0">${cat.name}</h3>
-                    <button class="nav-btn" style="padding:8px 20px; font-size:1rem; box-shadow:none; border:2px solid #FFCC00" onclick="toggleCategory('${cat.id}')">全選 / 取消</button>
+    categories.forEach(c => {
+        if (filter !== 'all' && filter !== c.id) return;
+        const list = allItems.filter(i => i.cat === c.id);
+        cont.insertAdjacentHTML('beforeend', `
+            <div class="cat-sec">
+                <div style="display:flex; justify-content:space-between; align-items:center; background:#FFD54F; padding:10px 20px; border-radius:15px; margin:20px 0 10px">
+                    <h3 style="margin:0">${c.name}</h3>
+                    <button class="btn" style="padding:5px 15px; font-size:0.9rem; box-shadow:none" onclick="toggleCatGroup('${c.id}')">全選 / 取消</button>
                 </div>
-                <div class="grid">
-                    ${items.map(item => `
-                        <div id="card-${item.id}" class="vocab-card ${selectedIds.has(item.id) ? 'selected' : ''}" onclick="toggleItem(${item.id})">
-                            <img src="${item.img}" onerror="this.src='https://via.placeholder.com/150?text=無圖片'">
-                            <div class="label-text">${item.name}</div>
-                        </div>
-                    `).join('')}
-                </div>
-            </div>`;
-        cont.insertAdjacentHTML('beforeend', html);
+                <div class="grid">${list.map(i => `
+                    <div id="v-${i.id}" class="v-card ${selectedIds.has(i.id)?'selected':''}" onclick="toggleItem(${i.id})">
+                        <img src="${i.img}" onerror="this.src='https://via.placeholder.com/150'">
+                        <div style="font-weight:bold; margin-top:8px">${i.name}</div>
+                    </div>`).join('')}</div>
+            </div>`);
     });
 }
 
 function toggleItem(id) {
     selectedIds.has(id) ? selectedIds.delete(id) : selectedIds.add(id);
-    document.getElementById(`card-${id}`).classList.toggle('selected');
+    document.getElementById(`v-${id}`).classList.toggle('selected');
     updateUI();
+}
+
+function toggleCatGroup(cid) {
+    const group = allItems.filter(i => i.cat === cid);
+    const allSelected = group.every(i => selectedIds.has(i.id));
+    group.forEach(i => allSelected ? selectedIds.delete(i.id) : selectedIds.add(i.id));
+    renderBank(); updateUI();
 }
 
 function updateUI() {
     document.getElementById('selected-count').innerText = selectedIds.size;
-    const btn = document.getElementById('start-btn');
-    btn.disabled = !selectedIds.size;
-    btn.classList.toggle('disabled', !selectedIds.size);
+    document.getElementById('start-btn').disabled = selectedIds.size === 0;
+}
+
+function startGame() {
+    level = parseInt(document.getElementById('game-level').value);
+    gameQueue = allItems.filter(i => selectedIds.has(i.id));
+    if (document.getElementById('order-mode').value === 'random') gameQueue.sort(() => Math.random() - 0.5);
+    records = {}; currentIdx = 0;
+    document.getElementById('bank-screen').classList.add('hidden');
+    document.getElementById('game-screen').classList.remove('hidden');
+    document.getElementById('level-tag').innerText = `Level ${level}`;
+    loadStage();
 }
 
 function loadStage() {
     const item = gameQueue[currentIdx];
-    document.getElementById('current-img').src = item.img;
-    document.getElementById('current-label').innerText = item.name;
-    document.getElementById('game-progress').innerText = `${currentIdx + 1} / ${gameQueue.length}`;
+    document.getElementById('display-img').src = item.img;
+    document.getElementById('label-box').innerText = item.name;
+    document.getElementById('progress-tag').innerText = `${currentIdx + 1} / ${gameQueue.length}`;
     
-    const hintGrid = document.getElementById('dynamic-hints-grid');
-    hintGrid.innerHTML = '';
-    let activeHints = ["類別", "特徵"]; // 基礎提示
-    if (HINT_RULES.location.includes(item.cat)) activeHints.push("地點");
-    if (HINT_RULES.function.includes(item.cat)) activeHints.push("用途");
-    if (HINT_RULES.inside.includes(item.cat)) activeHints.push("裡面有什麼");
+    const grid = document.getElementById('hints-area');
+    grid.innerHTML = '';
+
+    // Level 1: 只顯示規則定義的提示 | Level 2: 顯示所有提示
+    let activeHints = (level === 1) ? getValidHints(item.cat) : HINT_TYPES;
 
     activeHints.forEach(type => {
-        const ui = HINT_UI[type];
-        hintGrid.insertAdjacentHTML('beforeend', `
-            <div class="flip-card" onclick="toggleFlip(this, '${type}')">
-                <div class="flip-card-inner">
-                    <div class="card-front">？</div>
-                    <div class="card-back ${ui.class}">
-                        <img src="${ui.img}" class="hint-icon-img" onerror="this.style.display='none'">
-                        <span>${type}</span>
+        const ui = UI_MAP[type];
+        const isSelected = records[item.id]?.[type];
+        // Level 2 不使用 Flip，只使用 Tick
+        grid.insertAdjacentHTML('beforeend', `
+            <div class="h-card ${isSelected && level===1 ? 'flipped' : ''} ${isSelected && level===2 ? 'ticked' : ''}" onclick="handleHintClick(this, '${type}')">
+                <div class="h-inner">
+                    <div class="h-front">？</div>
+                    <div class="h-back ${ui.class}">
+                        <img src="images/hints/${ui.icon}" style="width:50%; margin-bottom:5px" onerror="this.style.display='none'">
+                        <div>${type}</div>
                     </div>
                 </div>
             </div>`);
     });
-
-    syncLabelWithCheck();
-    document.getElementById('prev-btn').disabled = (currentIdx === 0);
-    document.getElementById('next-btn').innerText = (currentIdx === gameQueue.length - 1) ? "完成 🏁" : "下一個 ➡️";
+    document.getElementById('label-box').className = 'name-label hide-text';
+    document.getElementById('prev-btn').disabled = currentIdx === 0;
+    document.getElementById('next-btn').innerText = (currentIdx === gameQueue.length - 1) ? "分析結果 🏁" : "下一個 ➡️";
 }
 
-function toggleFlip(el, type) {
-    el.classList.toggle('flipped');
-    if (el.classList.contains('flipped')) {
-        const id = gameQueue[currentIdx].id;
-        if (!gameRecords[id]) gameRecords[id] = {};
-        gameRecords[id][type] = true;
+function getValidHints(cat) {
+    let list = ["類別", "特徵"];
+    if (RULES.location.includes(cat)) list.push("地點");
+    if (RULES.function.includes(cat)) list.push("用途");
+    if (RULES.inside.includes(cat)) list.push("裡面有什麼");
+    if (RULES.will_do.includes(cat)) list.push("他會做什麼");
+    if (RULES.how_play.includes(cat)) list.push("怎麼玩");
+    return list;
+}
+
+function handleHintClick(el, type) {
+    const id = gameQueue[currentIdx].id;
+    if (!records[id]) records[id] = {};
+
+    if (level === 1) {
+        el.classList.toggle('flipped');
+        records[id][type] = el.classList.contains('flipped');
+    } else {
+        // Level 2 僅切換勾號，不提示正確性
+        el.classList.toggle('ticked');
+        records[id][type] = el.classList.contains('ticked');
     }
 }
 
-function syncLabelWithCheck() {
-    const checked = document.getElementById('always-show-check').checked;
-    document.getElementById('label-container').className = checked ? "show-text" : "hide-text";
-}
-
 function showReport() {
-    const head = document.getElementById('report-thead-row');
+    const head = document.getElementById('table-head');
     const body = document.getElementById('report-body');
-    const cols = ["項目", "類別", "特徵", "地點", "用途", "內容"];
-    head.innerHTML = cols.map(c => `<th>${c}</th>`).join('');
+    head.innerHTML = `<th>項目</th>${HINT_TYPES.map(h => `<th>${h}</th>`).join('')}`;
     
     body.innerHTML = gameQueue.map(item => {
-        const r = gameRecords[item.id] || {};
-        const chk = (t) => r[t] ? '<span style="color:red;font-weight:bold">✔</span>' : '-';
-        return `<tr>
-            <td><strong>${item.name}</strong></td>
-            <td>${chk("類別")}</td><td>${chk("特徵")}</td>
-            <td>${chk("地點")}</td><td>${chk("用途")}</td>
-            <td>${chk("裡面有什麼")}</td>
-        </tr>`;
+        const r = records[item.id] || {};
+        const valid = getValidHints(item.cat);
+        const cells = HINT_TYPES.map(h => {
+            const picked = r[h];
+            const shouldPick = valid.includes(h);
+            if (level === 1) return picked ? '✅' : '-';
+            // Level 2 老師專用分析
+            if (picked && shouldPick) return '<b style="color:green">✔ 正確</b>';
+            if (picked && !shouldPick) return '<b style="color:red">✘ 誤選</b>';
+            if (!picked && shouldPick) return '<span style="color:orange">⚠️ 漏選</span>';
+            return '-';
+        });
+        return `<tr><td><b>${item.name}</b></td>${cells.map(c => `<td>${c}</td>`).join('')}</tr>`;
     }).join('');
     document.getElementById('report-overlay').classList.remove('hidden');
 }
 
-// 基礎切換功能
-function startSelectedGame() {
-    gameQueue = vocabItems.filter(i => selectedIds.has(i.id));
-    gameRecords = {};
-    if (document.getElementById('order-mode').value === 'random') gameQueue.sort(() => Math.random() - 0.5);
-    currentIdx = 0;
-    document.getElementById('bank-screen').classList.add('hidden');
-    document.getElementById('game-screen').classList.remove('hidden');
-    loadStage();
-}
-function nextPhoto() { currentIdx < gameQueue.length - 1 ? (currentIdx++, loadStage()) : showReport(); }
-function prevPhoto() { if (currentIdx > 0) { currentIdx--; loadStage(); } }
-function toggleCategory(cid) {
-    const its = vocabItems.filter(i => i.cat === cid);
-    const all = its.every(i => selectedIds.has(i.id));
-    its.forEach(i => all ? selectedIds.delete(i.id) : selectedIds.add(i.id));
-    renderBank(); updateUI();
-}
-function filterCategory() { currentFilter = document.getElementById('category-filter').value; renderBank(); }
-function adjustZoom() { document.documentElement.style.setProperty('--card-size', document.getElementById('zoom-slider').value + 'px'); }
-function resetSelection() { if(confirm("確定重設？")){ selectedIds.clear(); renderBank(); updateUI(); } }
+function toggleName() { document.getElementById('label-box').classList.toggle('hide-text'); }
+function changeStage(dir) { if (dir === 1 && currentIdx === gameQueue.length - 1) return showReport(); currentIdx += dir; loadStage(); }
+function adjustZoom() { document.documentElement.style.setProperty('--card-w', document.getElementById('zoom-slider').value + 'px'); }
+function resetSelection() { selectedIds.clear(); renderBank(); updateUI(); }
 function exitGame() { document.getElementById('game-screen').classList.add('hidden'); document.getElementById('bank-screen').classList.remove('hidden'); }
 function closeReport() { document.getElementById('report-overlay').classList.add('hidden'); exitGame(); }
 
