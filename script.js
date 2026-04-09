@@ -72,7 +72,7 @@ function renderBank() {
             <div class="cat-sec">
                 <div style="display:flex; justify-content:space-between; align-items:center; background:#FFD54F; padding:10px 20px; border-radius:15px; margin:20px 0 10px">
                     <h3 style="margin:0">${c.name}</h3>
-                    <button class="btn" style="padding:5px 15px; font-size:0.9rem; box-shadow:none" onclick="toggleCatGroup('${c.id}')">全選 / 取消</button>
+                    <button class="btn" style="padding:5px 15px; font-size:0.8rem; box-shadow:none" onclick="toggleCatGroup('${c.id}')">全選 / 取消</button>
                 </div>
                 <div class="grid">${list.map(i => `
                     <div id="v-${i.id}" class="v-card ${selectedIds.has(i.id)?'selected':''}" onclick="toggleItem(${i.id})">
@@ -112,6 +112,12 @@ function startGame() {
     records = {}; currentIdx = 0;
     document.getElementById('bank-screen').classList.add('hidden');
     document.getElementById('game-screen').classList.remove('hidden');
+    
+    // 修正點：如果是 Level 2，給容器加上專屬 Class 以便 CSS 控制
+    const hintArea = document.getElementById('hints-area');
+    if (level === 2) hintArea.classList.add('lvl2-mode');
+    else hintArea.classList.remove('lvl2-mode');
+
     document.getElementById('level-tag').innerText = `Level ${level}`;
     loadStage();
 }
@@ -125,18 +131,22 @@ function loadStage() {
     const grid = document.getElementById('hints-area');
     grid.innerHTML = '';
 
+    // Level 1 只顯規則內提示，Level 2 顯全部 7 個
     let activeHints = (level === 1) ? getValidHints(item.cat) : HINT_TYPES;
 
     activeHints.forEach(type => {
         const ui = UI_MAP[type];
         const isSelected = records[item.id]?.[type];
+        
         grid.insertAdjacentHTML('beforeend', `
             <div class="h-card ${isSelected && level===1 ? 'flipped' : ''} ${isSelected && level===2 ? 'ticked' : ''}" onclick="handleHintClick(this, '${type}')">
                 <div class="h-inner">
                     <div class="h-front">？</div>
                     <div class="h-back ${ui.class}">
-                        <img src="images/hints/${ui.icon}" class="hint-icon-img" onerror="this.style.display='none'">
-                        <span>${type}</span>
+                        <div style="text-align:center">
+                            <img src="images/hints/${ui.icon}" style="width:40px;height:40px;display:block;margin:0 auto 5px" onerror="this.style.display='none'">
+                            <span>${type}</span>
+                        </div>
                     </div>
                 </div>
             </div>`);
@@ -179,9 +189,9 @@ function showReport() {
             const picked = r[h];
             const should = valid.includes(h);
             if (level === 1) return picked ? '✅' : '-';
-            if (picked && should) return '<b style="color:green">✔ 正確</b>';
-            if (picked && !should) return '<b style="color:red">✘ 誤選</b>';
-            if (!picked && should) return '<span style="color:orange">⚠️ 漏選</span>';
+            if (picked && should) return '<b style="color:green">✔</b>';
+            if (picked && !should) return '<b style="color:red">誤</b>';
+            if (!picked && should) return '<span style="color:orange">漏</span>';
             return '-';
         });
         return `<tr><td><b>${item.name}</b></td>${cells.map(c => `<td>${c}</td>`).join('')}</tr>`;
