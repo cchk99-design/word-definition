@@ -29,7 +29,6 @@ const vocabData = {
 
 const HINT_TYPES = ["類別", "特徵", "地點", "用途", "裡面有什麼", "他會做什麼", "怎麼玩"];
 
-// 💡 提示顯示邏輯規則
 const RULES = {
     location: ["animals", "transport", "colors", "occupation", "electronic", "furniture"],
     function: ["toilet", "tableware", "electronic", "furniture", "stationery", "clothing", "transport", "places", "accessories"],
@@ -86,7 +85,8 @@ function renderBank() {
 
 function toggleItem(id) {
     selectedIds.has(id) ? selectedIds.delete(id) : selectedIds.add(id);
-    document.getElementById(`v-${id}`).classList.toggle('selected');
+    const card = document.getElementById(`v-${id}`);
+    if(card) card.classList.toggle('selected');
     updateUI();
 }
 
@@ -94,19 +94,34 @@ function toggleCatGroup(cid) {
     const group = allItems.filter(i => i.cat === cid);
     const allSelected = group.every(i => selectedIds.has(i.id));
     group.forEach(i => allSelected ? selectedIds.delete(i.id) : selectedIds.add(i.id));
-    renderBank(); updateUI();
+    renderBank(); 
+    updateUI();
 }
 
 function updateUI() {
-    document.getElementById('selected-count').innerText = selectedIds.size;
-    document.getElementById('start-btn').disabled = selectedIds.size === 0;
+    const count = selectedIds.size;
+    document.getElementById('selected-count').innerText = count;
+    const startBtn = document.getElementById('start-btn');
+    if (count > 0) {
+        startBtn.disabled = false;
+        startBtn.classList.remove('disabled');
+    } else {
+        startBtn.disabled = true;
+        startBtn.classList.add('disabled');
+    }
 }
 
 function startGame() {
     level = parseInt(document.getElementById('game-level').value);
     gameQueue = allItems.filter(i => selectedIds.has(i.id));
-    if (document.getElementById('order-mode').value === 'random') gameQueue.sort(() => Math.random() - 0.5);
-    records = {}; currentIdx = 0;
+    if (gameQueue.length === 0) return;
+
+    if (document.getElementById('order-mode').value === 'random') {
+        gameQueue.sort(() => Math.random() - 0.5);
+    }
+    
+    records = {}; 
+    currentIdx = 0;
     document.getElementById('bank-screen').classList.add('hidden');
     document.getElementById('game-screen').classList.remove('hidden');
     document.getElementById('level-tag').innerText = `Level ${level}`;
@@ -122,13 +137,11 @@ function loadStage() {
     const grid = document.getElementById('hints-area');
     grid.innerHTML = '';
 
-    // Level 1: 只顯示規則定義的提示 | Level 2: 顯示所有提示
     let activeHints = (level === 1) ? getValidHints(item.cat) : HINT_TYPES;
 
     activeHints.forEach(type => {
         const ui = UI_MAP[type];
         const isSelected = records[item.id]?.[type];
-        // Level 2 不使用 Flip，只使用 Tick
         grid.insertAdjacentHTML('beforeend', `
             <div class="h-card ${isSelected && level===1 ? 'flipped' : ''} ${isSelected && level===2 ? 'ticked' : ''}" onclick="handleHintClick(this, '${type}')">
                 <div class="h-inner">
@@ -140,8 +153,9 @@ function loadStage() {
                 </div>
             </div>`);
     });
+
     document.getElementById('label-box').className = 'name-label hide-text';
-    document.getElementById('prev-btn').disabled = currentIdx === 0;
+    document.getElementById('prev-btn').disabled = (currentIdx === 0);
     document.getElementById('next-btn').innerText = (currentIdx === gameQueue.length - 1) ? "分析結果 🏁" : "下一個 ➡️";
 }
 
@@ -163,7 +177,6 @@ function handleHintClick(el, type) {
         el.classList.toggle('flipped');
         records[id][type] = el.classList.contains('flipped');
     } else {
-        // Level 2 僅切換勾號，不提示正確性
         el.classList.toggle('ticked');
         records[id][type] = el.classList.contains('ticked');
     }
@@ -181,7 +194,6 @@ function showReport() {
             const picked = r[h];
             const shouldPick = valid.includes(h);
             if (level === 1) return picked ? '✅' : '-';
-            // Level 2 老師專用分析
             if (picked && shouldPick) return '<b style="color:green">✔ 正確</b>';
             if (picked && !shouldPick) return '<b style="color:red">✘ 誤選</b>';
             if (!picked && shouldPick) return '<span style="color:orange">⚠️ 漏選</span>';
@@ -193,7 +205,11 @@ function showReport() {
 }
 
 function toggleName() { document.getElementById('label-box').classList.toggle('hide-text'); }
-function changeStage(dir) { if (dir === 1 && currentIdx === gameQueue.length - 1) return showReport(); currentIdx += dir; loadStage(); }
+function changeStage(dir) { 
+    if (dir === 1 && currentIdx === gameQueue.length - 1) return showReport(); 
+    currentIdx += dir; 
+    loadStage(); 
+}
 function adjustZoom() { document.documentElement.style.setProperty('--card-w', document.getElementById('zoom-slider').value + 'px'); }
 function resetSelection() { selectedIds.clear(); renderBank(); updateUI(); }
 function exitGame() { document.getElementById('game-screen').classList.add('hidden'); document.getElementById('bank-screen').classList.remove('hidden'); }
