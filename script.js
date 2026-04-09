@@ -28,9 +28,9 @@ const vocabData = {
     accessories: ["眼鏡", "頸鍊","手鍊","耳環","戒指","手錶","髮夾","銀包","書包","手袋","遮"]
 };
 
-// 提示卡規則配置
+// 💡 更新後的提示卡規則：地點現在包含 animals 和 transport
 const HINT_RULES = {
-    location: ["colors", "occupation", "electronic", "furniture"],
+    location: ["colors", "occupation", "electronic", "furniture", "animals", "transport"],
     function: ["occupation", "toilet", "tableware", "electronic", "furniture", "stationery", "clothing", "transport", "places", "accessories"],
     inside: ["toys", "places"]
 };
@@ -113,10 +113,9 @@ function loadStage() {
     document.getElementById('current-label').innerText = item.name;
     document.getElementById('game-progress').innerText = `${currentIdx + 1} / ${gameQueue.length}`;
     
-    // 生成動態提示卡
     const hintGrid = document.getElementById('dynamic-hints-grid');
     hintGrid.innerHTML = '';
-    let activeHints = ["類別", "特徵"];
+    let activeHints = ["類別", "特徵"]; // 基礎提示
     if (HINT_RULES.location.includes(item.cat)) activeHints.push("地點");
     if (HINT_RULES.function.includes(item.cat)) activeHints.push("用途");
     if (HINT_RULES.inside.includes(item.cat)) activeHints.push("裡面有什麼");
@@ -157,23 +156,23 @@ function syncLabelWithCheck() {
 function showReport() {
     const head = document.getElementById('report-thead-row');
     const body = document.getElementById('report-body');
-    const columns = ["項目", "類別", "特徵", "地點", "用途", "裡面有什麼"];
-    head.innerHTML = columns.map(c => `<th>${c}</th>`).join('');
+    const cols = ["項目", "類別", "特徵", "地點", "用途", "內容"];
+    head.innerHTML = cols.map(c => `<th>${c}</th>`).join('');
     
     body.innerHTML = gameQueue.map(item => {
         const r = gameRecords[item.id] || {};
-        const check = (t) => r[t] ? '<span style="color:red;font-weight:bold">✔</span>' : '-';
+        const chk = (t) => r[t] ? '<span style="color:red;font-weight:bold">✔</span>' : '-';
         return `<tr>
             <td><strong>${item.name}</strong></td>
-            <td>${check("類別")}</td><td>${check("特徵")}</td>
-            <td>${check("地點")}</td><td>${check("用途")}</td>
-            <td>${check("裡面有什麼")}</td>
+            <td>${chk("類別")}</td><td>${chk("特徵")}</td>
+            <td>${chk("地點")}</td><td>${chk("用途")}</td>
+            <td>${chk("裡面有什麼")}</td>
         </tr>`;
     }).join('');
     document.getElementById('report-overlay').classList.remove('hidden');
 }
 
-// 基礎功能
+// 基礎切換功能
 function startSelectedGame() {
     gameQueue = vocabItems.filter(i => selectedIds.has(i.id));
     gameRecords = {};
