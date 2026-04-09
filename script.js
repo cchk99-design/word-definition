@@ -70,14 +70,14 @@ function renderBank() {
         const list = allItems.filter(i => i.cat === c.id);
         cont.insertAdjacentHTML('beforeend', `
             <div class="cat-sec">
-                <div style="display:flex; justify-content:space-between; align-items:center; background:#FFD54F; padding:10px 20px; border-radius:15px; margin:20px 0 10px">
-                    <h3 style="margin:0">${c.name}</h3>
-                    <button class="btn" style="padding:5px 15px; font-size:0.9rem; box-shadow:none" onclick="toggleCatGroup('${c.id}')">全選 / 取消</button>
+                <div style="display:flex; justify-content:space-between; align-items:center; background:#FFF9C4; padding:8px 15px; border-radius:12px; margin:15px 0 10px; border: 1px solid #FBC02D;">
+                    <h3 style="margin:0; font-size:1.1rem; color:#7B5E00;">${c.name}</h3>
+                    <button class="btn" style="padding:4px 12px; font-size:0.85rem; box-shadow:none; background:white; color:#666; border:1px solid #DDD;" onclick="toggleCatGroup('${c.id}')">全選 / 取消</button>
                 </div>
                 <div class="grid">${list.map(i => `
                     <div id="v-${i.id}" class="v-card ${selectedIds.has(i.id)?'selected':''}" onclick="toggleItem(${i.id})">
-                        <img src="${i.img}" onerror="this.src='https://via.placeholder.com/150'">
-                        <div style="font-weight:bold; margin-top:8px">${i.name}</div>
+                        <img src="${i.img}" onerror="this.src='https://via.placeholder.com/150?text=No+Img'">
+                        <div style="font-weight:bold; margin-top:8px; font-size:0.95rem;">${i.name}</div>
                     </div>`).join('')}</div>
             </div>`);
     });
@@ -167,7 +167,6 @@ function showReport() {
     document.getElementById('report-overlay').classList.remove('hidden');
 }
 
-// 返回首頁邏輯
 function exitGame() {
     if(!confirm("確定要返回主頁嗎？目前的進度將不會儲存。")) return;
     document.getElementById('game-screen').classList.add('hidden');
