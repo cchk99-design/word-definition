@@ -1,8 +1,8 @@
 :root { --primary: #FFCC00; --accent: #2196F3; --success: #4CAF50; --card-w: 180px; }
-body { font-family: -apple-system, "Microsoft JhengHei", sans-serif; background: #FFFDF0; margin: 0; padding: 15px; user-select: none; touch-action: manipulation; }
+body { font-family: -apple-system, sans-serif; background: #FFFDF0; margin: 0; padding: 15px; user-select: none; touch-action: manipulation; }
 .hidden { display: none !important; }
 
-.main-title { text-align: center; color: #5D4037; font-size: 2rem; margin: 10px 0; }
+/* 頂部導航 */
 .sticky-controls { position: sticky; top: 10px; background: white; padding: 15px; border-radius: 20px; border: 4px solid var(--primary); z-index: 1000; box-shadow: 0 8px 20px rgba(0,0,0,0.1); margin-bottom: 30px; }
 .control-row, .action-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px; }
 
@@ -13,40 +13,36 @@ body { font-family: -apple-system, "Microsoft JhengHei", sans-serif; background:
 .v-card.selected::after { content: "✔"; position: absolute; top: -10px; right: -10px; background: var(--accent); color: white; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 3px solid white; }
 .v-card img { width: 100%; aspect-ratio: 1/1; object-fit: contain; pointer-events: none; }
 
-/* 提示卡 */
-.hints-grid { flex: 1; display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 15px; }
-.h-card { height: 160px; perspective: 1000px; cursor: pointer; position: relative; }
+/* iPad 提示卡網格：2-3 欄排列，方便點擊 */
+.hints-grid { flex: 1.5; display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 10px; }
+.h-card { height: 130px; perspective: 1000px; cursor: pointer; position: relative; }
 .h-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
 .flipped .h-inner { transform: rotateY(180deg); }
-.h-front, .h-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 10px; }
-.h-front { background: #F5F5F5; border: 2px dashed #CCC; font-size: 3rem; color: #BBB; }
-.h-back { transform: rotateY(180deg); font-weight: bold; }
 
-/* Level 2 勾號視覺 */
-.h-card.ticked::after { content: "✔"; position: absolute; top: -5px; right: -5px; background: var(--accent); color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; border: 3px solid white; z-index: 10; }
-.h-card.ticked .h-front { border: 4px solid var(--accent); background: #E3F2FD; }
+.h-front, .h-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 24px; display: flex; align-items: center; justify-content: center; padding: 15px; box-sizing: border-box; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+.h-front { background: #FFF; border: 3px solid #E0E0E0; font-size: 3rem; color: #BBB; }
+.h-back { transform: rotateY(180deg); font-weight: 800; font-size: 1.3rem; }
+.hint-icon-img { width: 50px; height: 50px; margin-right: 12px; object-fit: contain; }
+
+/* Level 2 勾選視覺：全卡片變色 */
+.h-card.ticked .h-front { border: 5px solid var(--accent); background: #E3F2FD; transform: scale(1.02); }
+.h-card.ticked::after { content: "✅"; position: absolute; top: -8px; right: -8px; font-size: 2.2rem; z-index: 10; }
 
 /* 屬性背景色 */
 .cat-bg { background: #B3E5FC; } .feat-bg { background: #C8E6C9; } .loc-bg { background: #FFE082; } 
 .func-bg { background: #E1BEE7; } .in-bg { background: #FFCCBC; } .do-bg { background: #D1C4E9; } .play-bg { background: #F8BBD0; }
 
-/* 按鈕與佈局 */
-.game-layout { display: flex; gap: 30px; padding: 20px; align-items: center; }
-.image-area { flex: 1.2; text-align: center; background: white; padding: 25px; border-radius: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-.img-frame { height: 350px; display: flex; align-items: center; justify-content: center; }
+/* 遊戲畫面 */
+.game-layout { display: flex; gap: 30px; padding: 20px; align-items: start; }
+.image-area { flex: 1.2; text-align: center; background: white; padding: 20px; border-radius: 30px; border: 1px solid #EEE; }
+.img-frame { height: 300px; display: flex; align-items: center; justify-content: center; }
 .img-frame img { max-width: 100%; max-height: 100%; }
-.name-label { font-size: 3.5rem; font-weight: 900; margin: 15px 0; min-height: 1.2em; transition: 0.3s; }
+.name-label { font-size: 3.5rem; font-weight: 900; margin: 15px 0; min-height: 1.2em; }
 .hide-text { filter: blur(25px); opacity: 0; }
 
 .btn { padding: 15px 30px; border-radius: 50px; border: none; font-weight: bold; font-size: 1.2rem; cursor: pointer; box-shadow: 0 5px 0 #999; }
-.btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #666; }
 .btn-start { background: var(--success); color: white; box-shadow: 0 5px 0 #2E7D32; }
-.btn-reset { background: #FF5252; color: white; box-shadow: 0 5px 0 #C62828; }
-.btn.disabled { opacity: 0.4; pointer-events: none; cursor: not-allowed; }
+.btn.disabled { opacity: 0.4; pointer-events: none; }
 
-.report-box { background: white; width: 95%; max-height: 90vh; border-radius: 25px; padding: 25px; display: flex; flex-direction: column; }
-.table-scroll { overflow-y: auto; flex: 1; margin-top: 15px; }
-table { width: 100%; border-collapse: collapse; }
-th, td { border: 1px solid #EEE; padding: 12px; text-align: center; }
-
-@media (max-width: 1024px) { .game-layout { flex-direction: column; } }
+@media (min-width: 1024px) { .hints-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 768px) { .game-layout { flex-direction: column; align-items: center; } .hints-grid { width: 100%; } }
