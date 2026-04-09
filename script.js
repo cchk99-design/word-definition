@@ -1,3 +1,4 @@
+// 類別名稱已更新：交通工具、傢俬
 const categories = [
     { id: "animals", name: "🐶 動物" }, { id: "transport", name: "🚗 交通工具" },
     { id: "colors", name: "🎨 顏色" }, { id: "occupation", name: "👨‍⚕️ 職業" },
@@ -70,37 +71,17 @@ function renderBank() {
         const list = allItems.filter(i => i.cat === c.id);
         cont.insertAdjacentHTML('beforeend', `
             <div class="cat-sec">
-                <div style="display:flex; justify-content:space-between; align-items:center; background:#FFF9C4; padding:8px 15px; border-radius:12px; margin:15px 0 10px; border: 1px solid #FBC02D;">
-                    <h3 style="margin:0; font-size:1.1rem; color:#7B5E00;">${c.name}</h3>
-                    <button class="btn" style="padding:4px 12px; font-size:0.85rem; box-shadow:none; background:white; color:#666; border:1px solid #DDD;" onclick="toggleCatGroup('${c.id}')">全選 / 取消</button>
+                <div style="display:flex; justify-content:space-between; align-items:center; background:#FFFDE7; padding:10px 20px; border-radius:15px; margin:20px 0 10px; border: 1px solid #FFF176;">
+                    <h3 style="margin:0; font-size:1.1rem; color:#616161;">${c.name}</h3>
+                    <button class="btn" style="padding:5px 15px; font-size:0.85rem; box-shadow:none; background:white; color:#999; border:1px solid #EEE;" onclick="toggleCatGroup('${c.id}')">全選 / 取消</button>
                 </div>
                 <div class="grid">${list.map(i => `
                     <div id="v-${i.id}" class="v-card ${selectedIds.has(i.id)?'selected':''}" onclick="toggleItem(${i.id})">
                         <img src="${i.img}" onerror="this.src='https://via.placeholder.com/150?text=No+Img'">
-                        <div style="font-weight:bold; margin-top:8px; font-size:0.95rem;">${i.name}</div>
+                        <div style="font-weight:bold; margin-top:10px;">${i.name}</div>
                     </div>`).join('')}</div>
             </div>`);
     });
-}
-
-function toggleItem(id) {
-    selectedIds.has(id) ? selectedIds.delete(id) : selectedIds.add(id);
-    document.getElementById(`v-${id}`).classList.toggle('selected');
-    updateUI();
-}
-
-function toggleCatGroup(cid) {
-    const group = allItems.filter(i => i.cat === cid);
-    const allSelected = group.every(i => selectedIds.has(i.id));
-    group.forEach(i => allSelected ? selectedIds.delete(i.id) : selectedIds.add(i.id));
-    renderBank(); updateUI();
-}
-
-function updateUI() {
-    document.getElementById('selected-count').innerText = selectedIds.size;
-    const btn = document.getElementById('start-btn');
-    btn.disabled = selectedIds.size === 0;
-    btn.classList.toggle('disabled', selectedIds.size === 0);
 }
 
 function startGame() {
@@ -211,5 +192,8 @@ function toggleName() { document.getElementById('label-box').classList.toggle('h
 function changeStage(dir) { if (dir === 1 && currentIdx === gameQueue.length - 1) return showReport(); currentIdx += dir; loadStage(); }
 function adjustZoom() { document.documentElement.style.setProperty('--card-w', document.getElementById('zoom-slider').value + 'px'); }
 function resetSelection() { selectedIds.clear(); renderBank(); updateUI(); }
+function toggleItem(id) { selectedIds.has(id) ? selectedIds.delete(id) : selectedIds.add(id); document.getElementById(`v-${id}`).classList.toggle('selected'); updateUI(); }
+function toggleCatGroup(cid) { const group = allItems.filter(i => i.cat === cid); const allSelected = group.every(i => selectedIds.has(i.id)); group.forEach(i => allSelected ? selectedIds.delete(i.id) : selectedIds.add(i.id)); renderBank(); updateUI(); }
+function updateUI() { document.getElementById('selected-count').innerText = selectedIds.size; const btn = document.getElementById('start-btn'); btn.disabled = selectedIds.size === 0; btn.classList.toggle('disabled', selectedIds.size === 0); }
 
 init();
