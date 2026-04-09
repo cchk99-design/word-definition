@@ -72,7 +72,7 @@ function renderBank() {
             <div class="cat-sec">
                 <div style="display:flex; justify-content:space-between; align-items:center; background:#FFD54F; padding:10px 20px; border-radius:15px; margin:20px 0 10px">
                     <h3 style="margin:0">${c.name}</h3>
-                    <button class="btn" style="padding:5px 15px; font-size:0.8rem; box-shadow:none" onclick="toggleCatGroup('${c.id}')">全選 / 取消</button>
+                    <button class="btn" style="padding:5px 15px; font-size:0.9rem; box-shadow:none" onclick="toggleCatGroup('${c.id}')">全選 / 取消</button>
                 </div>
                 <div class="grid">${list.map(i => `
                     <div id="v-${i.id}" class="v-card ${selectedIds.has(i.id)?'selected':''}" onclick="toggleItem(${i.id})">
@@ -108,10 +108,8 @@ function startGame() {
     gameQueue = allItems.filter(i => selectedIds.has(i.id));
     if (document.getElementById('order-mode').value === 'random') gameQueue.sort(() => Math.random() - 0.5);
     records = {}; currentIdx = 0;
-    
     document.getElementById('bank-screen').classList.add('hidden');
     document.getElementById('game-screen').classList.remove('hidden');
-    
     const hintArea = document.getElementById('hints-area');
     level === 2 ? hintArea.classList.add('lvl2-mode') : hintArea.classList.remove('lvl2-mode');
     document.getElementById('level-tag').innerText = `Level ${level}`;
@@ -123,11 +121,9 @@ function loadStage() {
     document.getElementById('display-img').src = item.img;
     document.getElementById('label-box').innerText = item.name;
     document.getElementById('progress-tag').innerText = `${currentIdx + 1} / ${gameQueue.length}`;
-    
     const grid = document.getElementById('hints-area');
     grid.innerHTML = '';
     let activeHints = (level === 1) ? getValidHints(item.cat) : HINT_TYPES;
-
     activeHints.forEach(type => {
         const ui = UI_MAP[type];
         const isSelected = records[item.id]?.[type];
@@ -169,29 +165,23 @@ function getValidHints(cat) {
     return list;
 }
 
-// 報表：不論 L1 或 L2 都支援匯出
 function showReport() {
     const head = document.getElementById('table-head');
     const body = document.getElementById('report-body');
     head.innerHTML = `<th>項目</th>${HINT_TYPES.map(h => `<th>${h}</th>`).join('')}`;
-    
     body.innerHTML = gameQueue.map(item => {
         const r = records[item.id] || {};
-        // 報告簡化邏輯：僅顯示 ✅ 或 -
         const cells = HINT_TYPES.map(h => (r[h] ? '✅' : '-'));
         return `<tr><td><strong>${item.name}</strong></td>${cells.map(c => `<td>${c}</td>`).join('')}</tr>`;
     }).join('');
-    
     document.getElementById('report-overlay').classList.remove('hidden');
 }
 
-// PNG 匯出函數
 async function exportToImage() {
     const btn = document.querySelector('.btn-download');
     const ctrl = document.querySelector('.report-btns');
-    btn.innerText = "處理中...";
-    ctrl.style.display = 'none'; // 暫時隱藏按鈕不讓它出現在圖片裡
-
+    btn.innerText = "正在匯圖...";
+    ctrl.style.display = 'none';
     try {
         const canvas = await html2canvas(document.getElementById('capture-area'), { scale: 2 });
         const link = document.createElement('a');
@@ -199,8 +189,7 @@ async function exportToImage() {
         link.download = `${sName}_教學紀錄_${new Date().toLocaleDateString()}.png`;
         link.href = canvas.toDataURL("image/png");
         link.click();
-    } catch (e) { alert("匯出失敗，請檢查瀏覽器權限"); }
-
+    } catch (e) { alert("匯出失敗"); }
     ctrl.style.display = 'flex';
     btn.innerText = "💾 下載 PNG 紀錄";
 }
