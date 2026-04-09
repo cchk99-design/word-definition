@@ -7,49 +7,46 @@ body { font-family: -apple-system, sans-serif; background: #FFFDF0; margin: 0; p
 .control-row, .action-row { display: flex; justify-content: space-between; align-items: center; gap: 15px; }
 
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--card-w), 1fr)); gap: 20px; }
-.v-card { background: white; border-radius: 20px; border: 4px solid #EEE; text-align: center; cursor: pointer; padding: 15px; position: relative; transition: 0.2s; }
+.v-card { background: white; border-radius: 20px; border: 4px solid #EEE; text-align: center; cursor: pointer; padding: 15px; position: relative; }
 .v-card.selected { border-color: var(--accent); background: #E3F2FD; }
-.v-card.selected::after { content: "✔"; position: absolute; top: -10px; right: -10px; background: var(--accent); color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
 .v-card img { width: 85%; aspect-ratio: 1/1; object-fit: contain; margin-bottom: 10px; }
 
-/* iPad 遊戲介面 */
-.game-layout { display: grid; grid-template-columns: 1fr 1.6fr; gap: 30px; padding: 20px; height: calc(100vh - 180px); }
-.image-area { background: white; border-radius: 30px; padding: 25px; display: flex; flex-direction: column; text-align: center; border: 1px solid #E0E0E0; }
+/* iPad 遊戲佈局 */
+.game-layout { display: grid; grid-template-columns: 1fr 1.2fr; gap: 30px; padding: 20px; height: calc(100vh - 200px); align-items: stretch; }
+.image-area { background: white; border-radius: 30px; padding: 25px; display: flex; flex-direction: column; text-align: center; border: 2px solid #EEE; }
 .img-frame { flex: 1; display: flex; align-items: center; justify-content: center; }
 .img-frame img { max-width: 100%; max-height: 100%; object-fit: contain; }
-.name-label { font-size: 3.5rem; font-weight: 900; margin: 15px 0; }
+.name-label { font-size: 3.5rem; font-weight: 900; margin: 15px 0; min-height: 1.2em; }
 .hide-text { filter: blur(25px); opacity: 0; }
 
-/* 提示卡 */
-.hints-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-.h-card { height: 160px; perspective: 1000px; cursor: pointer; position: relative; }
+/* 提示卡：固定每行 2 個，加大尺寸 */
+.hints-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; overflow-y: auto; padding-right: 10px; }
+.h-card { height: 180px; perspective: 1000px; cursor: pointer; position: relative; }
 .h-inner { width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
 .flipped .h-inner { transform: rotateY(180deg); }
-.h-front, .h-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 25px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 15px; box-sizing: border-box; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-.h-front { background: #F0F0F0; border: 3px dashed #CCC; font-size: 3.5rem; color: #BBB; }
-.h-back { transform: rotateY(180deg); font-weight: 800; font-size: 1.5rem; }
-.hint-img { width: 60px; height: 60px; margin-bottom: 10px; }
+.h-front, .h-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 25px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 15px; box-sizing: border-box; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+.h-front { background: #F5F5F5; border: 4px dashed #DDD; font-size: 4.5rem; color: #CCC; }
+.h-back { transform: rotateY(180deg); font-weight: 800; font-size: 1.8rem; text-align: center; line-height: 1.2; }
+.hint-img { width: 75px; height: 75px; margin-bottom: 12px; object-fit: contain; }
 
-/* L2 模式樣式 */
+/* Level 2 評估模式 */
 .lvl2-mode .h-front { display: none; }
 .lvl2-mode .h-back { transform: none; background: white; border: 4px solid #F0F0F0; }
 .lvl2-mode .ticked .h-back { border-color: var(--accent); background: #E3F2FD; }
-.lvl2-mode .ticked::after { content: "✅"; position: absolute; top: -10px; right: -10px; font-size: 2.5rem; z-index: 10; }
+.lvl2-mode .ticked::after { content: "✅"; position: absolute; top: -10px; right: -10px; font-size: 3rem; z-index: 10; }
 
-/* 報表 */
+/* 報表與按鈕 */
 #report-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; }
 .report-box { background: white; padding: 40px; border-radius: 25px; width: 100%; max-width: 1100px; max-height: 90vh; overflow-y: auto; }
-.name-input { font-size: 1.3rem; padding: 8px 15px; border: 2px solid #DDD; border-radius: 10px; }
+.name-input { font-size: 1.3rem; padding: 10px; border: 2px solid #DDD; border-radius: 10px; }
 table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-th, td { border: 1px solid #EEE; padding: 15px; text-align: center; }
-th { background: #F5F5F5; font-weight: bold; }
+th, td { border: 1px solid #EEE; padding: 15px; text-align: center; font-size: 1.2rem; }
+th { background: #F8F8F8; }
 
-.btn { padding: 15px 30px; border-radius: 50px; border: none; font-weight: bold; cursor: pointer; font-size: 1.1rem; box-shadow: 0 4px 0 #999; }
+.btn { padding: 18px 35px; border-radius: 50px; border: none; font-weight: bold; cursor: pointer; font-size: 1.3rem; box-shadow: 0 4px 0 #999; }
 .btn-start { background: var(--success); color: white; box-shadow: 0 4px 0 #2E7D32; }
-.btn-download { background: #673AB7; color: white; box-shadow: 0 4px 0 #4527A0; margin-right: 10px; }
+.btn-download { background: #673AB7; color: white; box-shadow: 0 4px 0 #4527A0; margin-right: 15px; }
 
-/* 卡片背景顏色 */
+/* 背景色 */
 .cat-bg { background: #B3E5FC; } .feat-bg { background: #C8E6C9; } .loc-bg { background: #FFE082; } 
 .func-bg { background: #E1BEE7; } .in-bg { background: #FFCCBC; } .do-bg { background: #D1C4E9; } .play-bg { background: #F8BBD0; }
-
-@media (min-width: 1024px) { .hints-grid { grid-template-columns: repeat(3, 1fr); } }
