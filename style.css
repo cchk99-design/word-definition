@@ -1,50 +1,48 @@
 :root { --primary: #FFCC00; --accent: #2196F3; --success: #4CAF50; --card-w: 180px; }
-body { font-family: -apple-system, sans-serif; background: #FFFDF0; margin: 0; padding: 15px; user-select: none; touch-action: manipulation; }
+body { font-family: -apple-system, "Microsoft JhengHei", sans-serif; background: #FFFDF0; margin: 0; padding: 15px; user-select: none; touch-action: manipulation; }
 .hidden { display: none !important; }
 
-/* 介面與導航 */
-.main-title { text-align: center; color: #5D4037; margin: 10px 0; }
-.sticky-controls { position: sticky; top: 10px; background: white; padding: 15px; border-radius: 20px; border: 4px solid var(--primary); z-index: 100; box-shadow: 0 8px 15px rgba(0,0,0,0.1); margin-bottom: 30px; }
+.main-title { text-align: center; color: #5D4037; font-size: 2rem; margin: 10px 0; }
+.sticky-controls { position: sticky; top: 10px; background: white; padding: 15px; border-radius: 20px; border: 4px solid var(--primary); z-index: 1000; box-shadow: 0 8px 20px rgba(0,0,0,0.1); margin-bottom: 30px; }
 .control-row, .action-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px; }
 
-/* 選題卡片 */
+/* 選題網格 */
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--card-w), 1fr)); gap: 20px; padding: 10px; }
-.v-card { background: white; border-radius: 20px; border: 4px solid #EEE; text-align: center; cursor: pointer; transition: 0.2s; padding: 10px; }
-.v-card.selected { border-color: var(--accent); background: #E3F2FD; transform: scale(1.05); }
+.v-card { background: white; border-radius: 20px; border: 4px solid #EEE; text-align: center; cursor: pointer; position: relative; padding: 10px; }
+.v-card.selected { border-color: var(--accent); background: #E3F2FD; }
 .v-card.selected::after { content: "✔"; position: absolute; top: -10px; right: -10px; background: var(--accent); color: white; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 3px solid white; }
-.v-card img { width: 100%; aspect-ratio: 1/1; object-fit: contain; }
+.v-card img { width: 100%; aspect-ratio: 1/1; object-fit: contain; pointer-events: none; }
 
-/* 遊戲提示卡 */
+/* 提示卡 */
 .hints-grid { flex: 1; display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 15px; }
 .h-card { height: 160px; perspective: 1000px; cursor: pointer; position: relative; }
 .h-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
 .flipped .h-inner { transform: rotateY(180deg); }
-.h-front, .h-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 10px; box-sizing: border-box; }
+.h-front, .h-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 10px; }
 .h-front { background: #F5F5F5; border: 2px dashed #CCC; font-size: 3rem; color: #BBB; }
 .h-back { transform: rotateY(180deg); font-weight: bold; }
 
-/* Level 2 勾選標記：純視覺，不代表正確性 */
+/* Level 2 勾號視覺 */
 .h-card.ticked::after { content: "✔"; position: absolute; top: -5px; right: -5px; background: var(--accent); color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; border: 3px solid white; z-index: 10; }
 .h-card.ticked .h-front { border: 4px solid var(--accent); background: #E3F2FD; }
 
-/* 顏色分類 */
+/* 屬性背景色 */
 .cat-bg { background: #B3E5FC; } .feat-bg { background: #C8E6C9; } .loc-bg { background: #FFE082; } 
 .func-bg { background: #E1BEE7; } .in-bg { background: #FFCCBC; } .do-bg { background: #D1C4E9; } .play-bg { background: #F8BBD0; }
 
-/* 核心 UI */
+/* 按鈕與佈局 */
 .game-layout { display: flex; gap: 30px; padding: 20px; align-items: center; }
 .image-area { flex: 1.2; text-align: center; background: white; padding: 25px; border-radius: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
 .img-frame { height: 350px; display: flex; align-items: center; justify-content: center; }
 .img-frame img { max-width: 100%; max-height: 100%; }
-.name-label { font-size: 4rem; font-weight: 900; margin: 20px 0; min-height: 1.2em; transition: 0.3s; }
+.name-label { font-size: 3.5rem; font-weight: 900; margin: 15px 0; min-height: 1.2em; transition: 0.3s; }
 .hide-text { filter: blur(25px); opacity: 0; }
 
 .btn { padding: 15px 30px; border-radius: 50px; border: none; font-weight: bold; font-size: 1.2rem; cursor: pointer; box-shadow: 0 5px 0 #999; }
 .btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #666; }
 .btn-start { background: var(--success); color: white; box-shadow: 0 5px 0 #2E7D32; }
 .btn-reset { background: #FF5252; color: white; box-shadow: 0 5px 0 #C62828; }
-.btn-nav { background: white; border: 2px solid #DDD; }
-.btn.disabled { opacity: 0.5; pointer-events: none; }
+.btn.disabled { opacity: 0.4; pointer-events: none; cursor: not-allowed; }
 
 .report-box { background: white; width: 95%; max-height: 90vh; border-radius: 25px; padding: 25px; display: flex; flex-direction: column; }
 .table-scroll { overflow-y: auto; flex: 1; margin-top: 15px; }
